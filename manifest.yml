@@ -1,0 +1,38 @@
+modules:
+  jira:projectPage:
+    - key: benefit-evaluation
+      resource: main
+      queue: queue-name
+      resolver:
+        function: resolver
+      title: Uncertainty Analysis and Periodization
+      layout: blank
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: static/benefit-evaluation/build
+    tunnel:
+      port: 3000
+permissions:
+  content:
+    styles:
+      - unsafe-inline
+  scopes:
+    - read:jira-work
+    - write:jira-work
+    - manage:jira-project
+    - storage:app
+translations:
+  resources:
+    - key: en-US
+      path: static/benefit-evaluation/locales/en-US.json
+    - key: no-NO
+      path: static/benefit-evaluation/locales/no-NO.json
+  fallback:
+    default: no-NO
+app:
+  runtime:
+    name: nodejs20.x
+  id: ari:cloud:ecosystem::app/5a11491a-a245-46cf-8c57-e64b532a2d4d
