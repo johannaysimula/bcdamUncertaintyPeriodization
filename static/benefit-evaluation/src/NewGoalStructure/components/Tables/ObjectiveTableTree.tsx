@@ -54,8 +54,9 @@ export const ObjectiveTableTree: React.FC<ObjectiveTableTreeProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const rootId = `root::${collectionId}`;
   const OBJECTIVE_ROOT_ITEM: ObjectiveRootItem = {
-    id: collectionId,
+    id: rootId,
     name: t("objective_table.root_name"),
     goals: formaalGoals,
     description: collectionData?.description,
@@ -77,7 +78,7 @@ export const ObjectiveTableTree: React.FC<ObjectiveTableTreeProps> = ({
       <Rows
         items={items as TableItem[]}
         render={(item: TableItem) => {
-          const isRoot = item.id === collectionId;
+          const isRoot = item.id === rootId;
           const goal = item as Goal;
           const children = isRoot ? (item as ObjectiveRootItem).goals : [];
           const isLiveGoal = !isRoot;

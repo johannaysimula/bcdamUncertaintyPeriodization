@@ -53,8 +53,9 @@ export const EpicTableTree: React.FC<EpicTableTreeProps> = ({
   const { t } = useTranslation();
   const isDataEmpty = epicGoals.length === 0;
 
+  const rootId = `root::${collectionId}`;
   const PRODUCT_ROOT_ITEM: ProductRootItem = {
-    id: collectionId,
+    id: rootId,
     name: t("epic_table.root_name"),
     goals: epicGoals,
   };
@@ -75,7 +76,7 @@ export const EpicTableTree: React.FC<EpicTableTreeProps> = ({
       <Rows
         items={items as TableItem[]}
         render={(item: TableItem) => {
-          const isRoot = item.id === collectionId;
+          const isRoot = item.id === rootId;
           const goal = item as unknown as Goal;
           const rootItem = item as unknown as ProductRootItem;
           const children = isRoot ? rootItem.goals : [];
@@ -106,7 +107,9 @@ export const EpicTableTree: React.FC<EpicTableTreeProps> = ({
               </Cell>
               <Cell>
                 <Lozenge appearance="new" isBold>
-                  {!isRoot && goal.balancedPoints?.value}
+                  {!isRoot && goal.balancedPoints?.value != null
+                    ? goal.balancedPoints.value.toFixed(2)
+                    : ""}
                 </Lozenge>
               </Cell>
 

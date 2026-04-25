@@ -48,8 +48,9 @@ export const BenefitTableTree: React.FC<BenefitTableTreeProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const rootId = `root::${collectionId}`;
   const BENEFIT_ROOT_ITEM: BenefitRootItem = {
-    id: collectionId,
+    id: rootId,
     name: t("benefit_table.root_name"),
     goals: benefitgoals,
   };
@@ -71,7 +72,7 @@ export const BenefitTableTree: React.FC<BenefitTableTreeProps> = ({
         <Rows
           items={items as TableItem[]}
           render={(item: TableItem) => {
-            const isRoot = item.id === collectionId;
+            const isRoot = item.id === rootId;
             const goal = item as Goal;
             const children = isRoot ? (item as BenefitRootItem).goals : [];
             const isLiveGoal = !isRoot;
