@@ -1,7 +1,7 @@
 // src/analysis/periodizationCalculations.ts
 
 // Hent kun det du trenger, og merk at Goal/EpicGoal nå er Goal i din fil
-import { Goal } from "../../Models";
+import { GoalTableItem } from "../../Models";
 import {
     Distribution,
     BP_DISTRIBUTIONS,
@@ -9,7 +9,7 @@ import {
     DISCOUNT_RATE_PER_YEAR
 } from "./PeriodizationProfiles";
 
-type EpicGoal = Goal;
+type EpicGoal = GoalTableItem;
 
 interface EpicProfileSelections {
   [epicId: string]: {

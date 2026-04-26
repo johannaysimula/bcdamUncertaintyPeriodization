@@ -42,20 +42,25 @@ export const HeaderNavigation = () => {
       src: "estimation",
       id: "estimation",
     },
-    ...(location.pathname.includes("portfolio/pf")
-      ? []
-      : [
-          {
-            name: "Analysis",
-            src: "analysis",
-            id: "analysis",
-          },
-        ]),
     {
       name: "Set Point Values",
       src: "points-config",
       id: "points-config",
     },
+    ...(location.pathname.includes("portfolio/pf")
+      ? []
+      : [
+          {
+            name: "Uncertainty Analysis",
+            src: "analysis",
+            id: "analysis",
+          },
+          {
+            name: "Periodization",
+            src: "periodization",
+            id: "periodization",
+          },
+        ]),
     {
       name: "Settings",
       src: "settings",

@@ -341,6 +341,11 @@
   "pes_bp": "Pessimistisk Nytte",
   "opt_sp": "Optimistisk Kostnad",
   "exp_sp": "Forventet Kostnad",
-  "pes_sp": "Pessimistisk Kostnad"
+  "pes_sp": "Pessimistisk Kostnad",
+  "optimistic_label": "Optimistisk",
+  "expected_label": "Forventet",
+  "pessimistic_label": "Pessimistisk",
+  "all_scenarios_label": "Alle scenarier",
+  "scenario_financial_chart_description": "Viser den fullstendige finansielle planen (gevinst, kostnad, nettoverdi og akkumulert NPV) for alle tre scenariene. Stiplet linje = optimistisk, hel linje = forventet, prikket linje = pessimistisk."
 }
 }

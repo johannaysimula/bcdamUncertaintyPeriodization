@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import PageHeader from "@atlaskit/page-header";
-import { Goal, GoalTier, GoalTierTypeEnum } from "../../Models";
+import { GoalTableItem, GoalTableItemTypeEnum } from "../../Models";
 import { useAppContext } from "../../Contexts/AppContext";
 import { useAPI } from "../../Contexts/ApiContext";
 import {
@@ -8,8 +8,6 @@ import {
   calculateScenarioPeriodization,
   PeriodizationPeriodResult,
 } from "./periodizationCalculations";
-import Button from "@atlaskit/button";
-
 import {
   EpicProfileSelections,
   ProfileOption,
@@ -20,6 +18,7 @@ import { EpicSelectionTable } from "./EpicSelectionTable";
 import { TotalResultsTable } from "./TotalResultsTable";
 import { PeriodizationChartContainer } from "./PeriodizationChartContainer";
 import { ScenarioChart } from "./ScenarioChart";
+import { ScenarioFinancialChart } from "./ScenarioFinancialChart";
 import { useTranslation } from "@forge/react";
 
 export const Periodization = () => {
@@ -30,7 +29,7 @@ export const Periodization = () => {
   const { benefitProfiles, costProfiles, benefitProfileMap, costProfileMap } =
     usePeriodizationProfiles();
 
-  const [epicGoals, setEpicGoals] = useState<Goal[] | null>(null);
+  const [epicGoals, setEpicGoals] = useState<GoalTableItem[] | null>(null);
   const [profileSelections, setProfileSelections] =
     useState<EpicProfileSelections>({});
 
@@ -107,42 +106,19 @@ export const Periodization = () => {
     }
   }, [epicGoals, profileSelections, numberOfPeriods, bpNokFactor, spNokFactor]);
 
-  // Fetch epic goals using the ISSUE_TYPE tier (same as bcdamUncertainty Analysis.tsx)
   const fetchEpicGoals = useCallback(async () => {
     try {
-      const goalTiers: GoalTier[] = await api.goalTier.getAll(
-        scope.id,
-        scope.type
-      );
-
-      // Try to find ISSUE_TYPE tier first (bcdamUncertainty approach)
-      const issueTypeTier = goalTiers.find(
-        (tier) => tier.type === GoalTierTypeEnum.ISSUE_TYPE
-      );
-
-      if (issueTypeTier) {
-        const epics = await api.goal.getAll(scope.id, issueTypeTier.id);
-        setEpicGoals(epics);
-        return;
-      }
-
-      // Fallback: use bcdamPeriodization approach - get all collections and filter root-epic
-      const allCollections = await api.goalCollection.getAll(scope.id);
-      let allEpics: Goal[] = [];
-
-      for (const collection of allCollections) {
-        const goals = await api.goal.getAll(scope.id, collection.id);
-        const filtered = goals.filter(
-          (goal) => goal.goalCollectionId === "root-epic"
-        );
-        allEpics = allEpics.concat(filtered);
-      }
-      setEpicGoals(allEpics);
+      const issues = await api.issue.getAll();
+      const mapped: GoalTableItem[] = issues.map((issue) => ({
+        ...issue,
+        type: GoalTableItemTypeEnum.ISSUE,
+      }));
+      setEpicGoals(mapped);
     } catch (error) {
       console.error("Error fetching epic goals:", error);
       setEpicGoals([]);
     }
-  }, [scope.id, scope.type, api]);
+  }, [api]);
 
   useEffect(() => {
     fetchEpicGoals();
@@ -273,6 +249,16 @@ export const Periodization = () => {
       {expectedResults.length > 0 && (
         <PeriodizationChartContainer periodizationResults={expectedResults} />
       )}
+
+      {optimisticResults.length > 0 &&
+        expectedResults.length > 0 &&
+        pessimisticResults.length > 0 && (
+          <ScenarioFinancialChart
+            optimisticResults={optimisticResults}
+            expectedResults={expectedResults}
+            pessimisticResults={pessimisticResults}
+          />
+        )}
     </>
   );
 };

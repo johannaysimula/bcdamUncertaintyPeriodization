@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import DynamicTable from "@atlaskit/dynamic-table";
 import Lozenge from "@atlaskit/lozenge";
 import Select from "@atlaskit/select";
-import { Goal } from "../../Models";
+import { GoalTableItem } from "../../Models";
 // 1. Updated imports: Removed the static variables, only importing types
 import {
   EpicProfileSelections,
@@ -27,7 +27,7 @@ import { useTranslation } from "@forge/react";
 
 // 2. Updated Interface to include the new props
 interface EpicSelectionTableProps {
-  epicGoals: Goal[] | null;
+  epicGoals: GoalTableItem[] | null;
   profileSelections: EpicProfileSelections;
   handleProfileChange: (
     epicId: string,

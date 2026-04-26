@@ -341,6 +341,11 @@
   "pes_bp": "Pessimistic Benefit",
   "opt_sp": "Optimistic Cost",
   "exp_sp": "Expected Cost",
-  "pes_sp": "Pessimistic Cost"
+  "pes_sp": "Pessimistic Cost",
+  "optimistic_label": "Optimistic",
+  "expected_label": "Expected",
+  "pessimistic_label": "Pessimistic",
+  "all_scenarios_label": "All Scenarios",
+  "scenario_financial_chart_description": "Shows the full financial plan (benefit, cost, net value bars, and accumulated NPV) for all three scenarios side by side. Dashed lines = optimistic, solid lines = expected, dotted lines = pessimistic."
 }
 }

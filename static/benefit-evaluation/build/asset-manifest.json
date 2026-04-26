@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "./static/css/main.4f82e3cc.css",
-    "main.js": "./static/js/main.4f8b4939.js",
+    "main.js": "./static/js/main.c9f8d8b9.js",
     "static/js/979.75467598.chunk.js": "./static/js/979.75467598.chunk.js",
     "@atlaskit-internal_atlassian-custom-theme.js": "./static/js/@atlaskit-internal_atlassian-custom-theme.e2e731ec.chunk.js",
     "@atlaskit-internal_atlassian-light.js": "./static/js/@atlaskit-internal_atlassian-light.6830ef16.chunk.js",
@@ -24,7 +24,7 @@
     "@atlaskit-internal_atlassian-dark-brand-refresh.js": "./static/js/@atlaskit-internal_atlassian-dark-brand-refresh.9b19e5ba.chunk.js",
     "index.html": "./index.html",
     "main.4f82e3cc.css.map": "./static/css/main.4f82e3cc.css.map",
-    "main.4f8b4939.js.map": "./static/js/main.4f8b4939.js.map",
+    "main.c9f8d8b9.js.map": "./static/js/main.c9f8d8b9.js.map",
     "979.75467598.chunk.js.map": "./static/js/979.75467598.chunk.js.map",
     "@atlaskit-internal_atlassian-custom-theme.e2e731ec.chunk.js.map": "./static/js/@atlaskit-internal_atlassian-custom-theme.e2e731ec.chunk.js.map",
     "@atlaskit-internal_atlassian-light.6830ef16.chunk.js.map": "./static/js/@atlaskit-internal_atlassian-light.6830ef16.chunk.js.map",
@@ -48,6 +48,6 @@
   },
   "entrypoints": [
     "static/css/main.4f82e3cc.css",
-    "static/js/main.4f8b4939.js"
+    "static/js/main.c9f8d8b9.js"
   ]
 }
