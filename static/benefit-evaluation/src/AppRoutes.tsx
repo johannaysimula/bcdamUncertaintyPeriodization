@@ -12,6 +12,7 @@ import { Introduction } from "./Pages/Introduction/Introduction";
 import { AdminPortfolio } from "./Pages/Portfolio/AdminPortfolio";
 import { GoalStructureContainer } from "./NewGoalStructure/components/GoalStructureContainer";
 import { Periodization } from "./Pages/Periodization/Periodization";
+import { PointsConfigPage } from "./Pages/PointsConfig/PointsConfig";
 
 export const AppRoutes = () => {
   return (
@@ -43,6 +44,7 @@ export const AppRoutes = () => {
         <Route path="introduction" element={<Introduction />} />
         <Route path="goal-structure-okr" element={<GoalStructureContainer />} />
         <Route path="periodization" element={<Periodization />} />
+        <Route path="points-config" element={<PointsConfigPage />} />
       </Route>
     </Routes>
   );

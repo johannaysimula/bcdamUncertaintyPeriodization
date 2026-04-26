@@ -11,6 +11,7 @@ import { estimationApi } from "../Api/EstimationApi";
 import { appApi } from "../Api/AppApi";
 import { portfolioItemApi } from "../Api/PortfolioItemApi";
 import { onboardingApi } from "../Api/OnboardingApi";
+import { pointsConfigApi } from "../Api/PointsConfigApi";
 
 type ApiContextProps = {
   children: ReactNode;
@@ -32,6 +33,7 @@ const fromAPI = () => {
     project: projectApi(),
     scope: scopeApi(),
     onboarding: onboardingApi(),
+    pointsConfig: pointsConfigApi(),
   };
 };
 

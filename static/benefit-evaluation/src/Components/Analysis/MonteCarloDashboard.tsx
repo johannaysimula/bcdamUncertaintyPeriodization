@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { GoalTableItem } from "../../Models";
+import { PointsConfig } from "../../Models/PointsConfigModel";
 import { Stack, Box, Flex, xcss } from "@atlaskit/primitives";
 import { Label } from "@atlaskit/form";
 import { HelperMessage } from "@atlaskit/form";
 import SectionMessage from "@atlaskit/section-message";
 import { Loading } from "../Common/Loading";
+
+const toRate = (v: unknown, fallback = 1): number => {
+  const n = Number(v);
+  return isNaN(n) ? fallback : n;
+};
 
 // --- STILER (Uendret) ---
 const kpiBoxStyle = xcss({
@@ -73,12 +79,22 @@ type MonteCarloProps = {
     benefitResults: number[];
     timeResults: number[];
   }) => void;
+  useValues?: boolean;
+  config?: PointsConfig | null;
 };
 
 export const MonteCarloDashboard = ({
   items,
   onSimulationComplete,
+  useValues = false,
+  config,
 }: MonteCarloProps) => {
+  const bpRate = useValues && config ? toRate(config.bpMonetaryValue) : 1;
+  const spRate = useValues && config ? toRate(config.spMonetaryValue) : 1;
+  const tpRate = useValues && config ? toRate(config.tpValue) : 1;
+  const bpUnit = useValues && config ? (config.bpCurrency || "pts") : "pts";
+  const spUnit = useValues && config ? (config.spCurrency || "pts") : "pts";
+  const tpUnit = useValues && config ? (config.tpUnit || "pts") : "pts";
   const [isSimulating, setIsSimulating] = useState<boolean>(true);
   const [simulationSummary, setSimulationSummary] = useState<any>(null);
 
@@ -240,93 +256,75 @@ export const MonteCarloDashboard = ({
 
             {/* NYTTE (Benefit) */}
             <h4 style={{ marginTop: "16px", marginBottom: "8px" }}>
-              Benefit Simulation
+              Benefit Simulation ({bpUnit})
             </h4>
             <Flex xcss={xcss({ gap: "space.200", flexWrap: "wrap" })}>
               <Box xcss={kpiBoxStyle}>
                 <Label htmlFor="">P35 (Pessimistic)</Label>
                 <Box xcss={kpiValueStyle} style={{ color: "#DE350B" }}>
-                  {" "}
-                  {/* Rød */}
-                  {simulationSummary.benefit.p35.toFixed(2)}
+                  {(simulationSummary.benefit.p35 * bpRate).toFixed(2)}
                 </Box>
               </Box>
               <Box xcss={kpiBoxStyle}>
                 <Label htmlFor="">P50 (Median)</Label>
                 <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
-                  {" "}
-                  {/* Blå */}
-                  {simulationSummary.benefit.p50.toFixed(2)}
+                  {(simulationSummary.benefit.p50 * bpRate).toFixed(2)}
                 </Box>
               </Box>
               <Box xcss={kpiBoxStyle}>
                 <Label htmlFor="">P85 (Optimistic)</Label>
                 <Box xcss={kpiValueStyle} style={{ color: "#36B37E" }}>
-                  {" "}
-                  {/* Grønn */}
-                  {simulationSummary.benefit.p85.toFixed(2)}
+                  {(simulationSummary.benefit.p85 * bpRate).toFixed(2)}
                 </Box>
               </Box>
             </Flex>
 
             {/* KOSTNAD (Cost) */}
             <h4 style={{ marginTop: "16px", marginBottom: "8px" }}>
-              Cost Simulation
+              Cost Simulation ({spUnit})
             </h4>
             <Flex xcss={xcss({ gap: "space.200", flexWrap: "wrap" })}>
               <Box xcss={kpiBoxStyle}>
                 <Label htmlFor="">P35 (Optimistic)</Label>
                 <Box xcss={kpiValueStyle} style={{ color: "#36B37E" }}>
-                  {" "}
-                  {/* Grønn */}
-                  {simulationSummary.cost.p35.toFixed(2)}
+                  {(simulationSummary.cost.p35 * spRate).toFixed(2)}
                 </Box>
               </Box>
               <Box xcss={kpiBoxStyle}>
                 <Label htmlFor="">P50 (Median)</Label>
                 <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
-                  {" "}
-                  {/* Blå */}
-                  {simulationSummary.cost.p50.toFixed(2)}
+                  {(simulationSummary.cost.p50 * spRate).toFixed(2)}
                 </Box>
               </Box>
               <Box xcss={kpiBoxStyle}>
                 <Label htmlFor="">P85 (Budget Goal)</Label>
                 <Box xcss={kpiValueStyle} style={{ color: "#FF8B00" }}>
-                  {" "}
-                  {/* Oransje */}
-                  {simulationSummary.cost.p85.toFixed(2)}
+                  {(simulationSummary.cost.p85 * spRate).toFixed(2)}
                 </Box>
               </Box>
             </Flex>
 
             {/* TID (Time) */}
             <h4 style={{ marginTop: "16px", marginBottom: "8px" }}>
-              Time Simulation
+              Time Simulation ({tpUnit})
             </h4>
             <Flex xcss={xcss({ gap: "space.200", flexWrap: "wrap" })}>
               <Box xcss={kpiBoxStyle}>
                 <Label htmlFor="">P35 (Optimistic)</Label>
                 <Box xcss={kpiValueStyle} style={{ color: "#36B37E" }}>
-                  {" "}
-                  {/* Grønn */}
-                  {simulationSummary.time.p35.toFixed(2)}
+                  {(simulationSummary.time.p35 * tpRate).toFixed(2)}
                 </Box>
               </Box>
               <Box xcss={kpiBoxStyle}>
                 <Label htmlFor="">P50 (Median)</Label>
                 <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
-                  {" "}
-                  {/* Blå */}
-                  {simulationSummary.time.p50.toFixed(2)}
+                  {(simulationSummary.time.p50 * tpRate).toFixed(2)}
                 </Box>
               </Box>
               <Box xcss={kpiBoxStyle}>
                 <Label htmlFor="">P85 (Deadline)</Label>
                 <Box xcss={kpiValueStyle} style={{ color: "#FF8B00" }}>
-                  {" "}
-                  {/* Oransje */}
-                  {simulationSummary.time.p85.toFixed(2)}
+                  {(simulationSummary.time.p85 * tpRate).toFixed(2)}
                 </Box>
               </Box>
             </Flex>

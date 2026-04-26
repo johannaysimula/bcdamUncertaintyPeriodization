@@ -16,6 +16,8 @@ type EpicTableProps = {
     upperIsMonetary: boolean
     costValue: number
     postfix: string
+    spRate?: number
+    tpRate?: number
 }
 
 export const EpicTable = ({
@@ -26,7 +28,9 @@ export const EpicTable = ({
     pointValue,
     upperIsMonetary,
     costValue,
-    postfix
+    postfix,
+    spRate = 1,
+    tpRate = 1,
 }: EpicTableProps) => {
     const navigation = useNavigate()
 
@@ -36,8 +40,8 @@ export const EpicTable = ({
     }, [items, showMonetary])
 
     const rows = useCallback(() => {
-        return EpicTableBody(items, showMonetary, pointValue, costValue, postfix, upperIsMonetary)
-    }, [items, showMonetary, pointValue, costValue, postfix, upperIsMonetary])
+        return EpicTableBody(items, showMonetary, pointValue, costValue, postfix, upperIsMonetary, spRate, tpRate)
+    }, [items, showMonetary, pointValue, costValue, postfix, upperIsMonetary, spRate, tpRate])
 
     const SettingsButton = () => {
         return (

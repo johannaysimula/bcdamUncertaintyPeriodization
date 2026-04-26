@@ -161,6 +161,15 @@ export const Nav = () => {
               </ButtonItem>
             </Section>
 
+            <Section hasSeparator title={t("points_config.title")}>
+              <ButtonItem
+                isSelected={endpoint === "points-config"}
+                onClick={() => navigation("points-config")}
+              >
+                {t("points_config.title")}
+              </ButtonItem>
+            </Section>
+
             <SpotlightTarget name="introduction-and-help">
               <Section title={t("nav_sidebar.introduction_section")}>
                 <ButtonItem

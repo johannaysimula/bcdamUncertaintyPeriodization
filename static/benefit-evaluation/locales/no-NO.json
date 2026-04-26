@@ -319,6 +319,17 @@
   "title": "Usikkerhetsanalyse",
   "description": "Monte Carlo simuleringsresultater"
 },
+"points_config": {
+    "title": "Sett Poengverdier",
+    "description": "Konfigurer den monetære og tidsmessige verdien av ett Nyttepoeng (BP) og ett Kostnadspoeng (SP).",
+    "bp_section": "Nyttepoeng (BP)",
+    "sp_section": "Kostnadspoeng (SP)",
+    "monetary_label": "1 Poeng =",
+    "tp_section": "Tidspoeng (TP)",
+    "save": "Lagre",
+    "save_success": "Verdier lagret.",
+    "save_error": "Klarte ikke å lagre. Prøv igjen."
+  },
 "periodization": {
   "pessimistic_table_title": "Pessimistisk finansiell plan over {{years}} år (millioner NOK)",
   "optimistic_table_title": "Optimistisk finansiell plan over {{years}} år (millioner NOK)",

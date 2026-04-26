@@ -28,8 +28,10 @@ ChartJS.register(
 );
 
 type ChartProps = {
-  data: number[]; // Rådata (f.eks. 10 000 resultater)
-  title: string; // F.eks. "Total Cost"
+  data: number[];
+  title: string;
+  rate?: number;
+  unit?: string;
 };
 
 // Funksjon for å gruppere data i "bins" for histogrammet
@@ -88,31 +90,29 @@ const createCumulativeData = (data: number[]) => {
   return { labels, cumulativePercent };
 };
 
-export const MonteCarloChartSet = ({ data, title }: ChartProps) => {
-  // Prosesser data for Histogram (PDF)
+export const MonteCarloChartSet = ({ data, title, rate = 1, unit = "" }: ChartProps) => {
+  const scaledData = useMemo(() => data.map((v) => v * rate), [data, rate]);
+  const axisLabel = unit ? `Simulated Value (${unit})` : "Simulated Value";
+
   const histogram = useMemo(() => {
-    const { labels, bins } = createHistogramData(data, 100); // 50 grupper JO: Nå 100
+    const { labels, bins } = createHistogramData(scaledData, 100);
     return {
       labels,
       datasets: [
         {
           label: `Frequency of ${title}`,
           data: bins,
-          backgroundColor: "rgba(0, 101, 255, 0.6)", // Atlassian Blå
+          backgroundColor: "rgba(0, 101, 255, 0.6)",
         },
       ],
     };
-  }, [data, title]);
+  }, [scaledData, title]);
 
-  // Prosesser data for Kumulativ (CDF) JO: ENDRET
   const cumulative = useMemo(() => {
     const cumulativesum = ((sum: number) => (value: number) => sum += value)(0);
-    const { labels, bins } = createHistogramData(data, 100); // 100 grupper
-    //onsole.log(bins);
-    const percentbins = bins.map((x:number)=>x/100);
-    //console.log(percentbins);
+    const { labels, bins } = createHistogramData(scaledData, 100);
+    const percentbins = bins.map((x: number) => x / 100);
     const cumulativebins = percentbins.map(cumulativesum);
-    //console.log(cumulativebins);
     return {
       labels,
       datasets: [
@@ -120,44 +120,34 @@ export const MonteCarloChartSet = ({ data, title }: ChartProps) => {
           label: `Cumulative % of ${title}`,
           data: cumulativebins,
           fill: false,
-          borderColor: "rgb(255, 139, 0)", // Atlassian Oransje
+          borderColor: "rgb(255, 139, 0)",
           tension: 0.1,
         },
       ],
     };
-  }, [data, title]);
+  }, [scaledData, title]);
 
-  // Options for Histogram
   const pdfOptions: ChartOptions<"bar"> = {
     responsive: true,
     plugins: {
       legend: { display: false },
-      title: {
-        display: true,
-        text: `Probability Distribution (PDF) - ${title}`,
-      },
+      title: { display: true, text: `Probability Distribution (PDF) - ${title}` },
     },
     scales: {
       y: { title: { display: true, text: "Frequency (Out of 10,000)" } },
-      x: { title: { display: true, text: "Simulated Value" } },
+      x: { title: { display: true, text: axisLabel } },
     },
   };
 
-  // Options for Kumulativ
   const cdfOptions: ChartOptions<"line"> = {
     responsive: true,
     plugins: {
       legend: { display: false },
-      title: {
-        display: true,
-        text: `Cumulative Distribution (CDF) - ${title}`,
-      },
+      title: { display: true, text: `Cumulative Distribution (CDF) - ${title}` },
       tooltip: {
         callbacks: {
           label: (context) =>
-            `There is a ${context.parsed.y?.toFixed(0)}% chance the result is ${
-              context.parsed.x
-            } or less.`,
+            `There is a ${context.parsed.y?.toFixed(0)}% chance the result is ${context.parsed.x} or less.`,
         },
       },
     },
@@ -167,7 +157,7 @@ export const MonteCarloChartSet = ({ data, title }: ChartProps) => {
         max: 100,
         title: { display: true, text: "Cumulative Probability (%)" },
       },
-      x: { title: { display: true, text: "Simulated Value" } },
+      x: { title: { display: true, text: axisLabel } },
     },
   };
 

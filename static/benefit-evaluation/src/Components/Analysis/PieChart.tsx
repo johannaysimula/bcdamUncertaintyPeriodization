@@ -10,6 +10,7 @@ import {
   ChartOptions,
 } from "chart.js";
 import { GoalTableItem } from "../../Models";
+import { PointsConfig } from "../../Models/PointsConfigModel";
 import { Box } from "@atlaskit/primitives";
 
 // Registrer komponentene Chart.js trenger
@@ -17,6 +18,8 @@ ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 type PlotProps = {
   items: GoalTableItem[];
+  useValues?: boolean;
+  config?: PointsConfig | null;
 };
 
 // --- NY FIKS: Definert fargepalett ---
@@ -33,8 +36,15 @@ const ATLASSIAN_COLORS = [
 ];
 // --- SLUTT PÅ FIKS ---
 
-export const BenefitPieChart = ({ items }: PlotProps) => {
-  // Transformer dataen til et format Chart.js forstår
+const toRate = (v: unknown, fallback = 1): number => {
+  const n = Number(v);
+  return isNaN(n) ? fallback : n;
+};
+
+export const BenefitPieChart = ({ items, useValues = false, config }: PlotProps) => {
+  const bpRate = useValues && config ? toRate(config.bpMonetaryValue) : 1;
+  const bpUnit = useValues && config ? (config.bpCurrency || "pts") : "pts";
+
   const data: ChartData<"pie"> = useMemo(() => {
     const labels: string[] = [];
     const dataPoints: number[] = [];
@@ -44,7 +54,7 @@ export const BenefitPieChart = ({ items }: PlotProps) => {
     items.forEach((item, index) => {
       const key = item.key || "Unknown";
       const properties = (item as any).properties;
-      const benefit = properties?.evaluation_points?.value || 0;
+      const benefit = (properties?.evaluation_points?.value || 0) * bpRate;
 
       // Sorter data fra størst til minst for et penere diagram
       // (Dette er valgfritt, men anbefalt)
@@ -65,7 +75,7 @@ export const BenefitPieChart = ({ items }: PlotProps) => {
       labels,
       datasets: [
         {
-          label: "Benefit Points",
+          label: `Benefit (${bpUnit})`,
           data: dataPoints,
           backgroundColor: backgroundColors,
           borderColor: borderColors,
@@ -73,7 +83,7 @@ export const BenefitPieChart = ({ items }: PlotProps) => {
         },
       ],
     };
-  }, [items]);
+  }, [items, bpRate, bpUnit]);
 
   const options: ChartOptions<"pie"> = {
     responsive: true,
@@ -83,7 +93,7 @@ export const BenefitPieChart = ({ items }: PlotProps) => {
       },
       title: {
         display: true,
-        text: "Benefit Point Contribution per Epic",
+        text: `Benefit Contribution per Epic (${bpUnit})`,
         font: { size: 16 },
       },
     },

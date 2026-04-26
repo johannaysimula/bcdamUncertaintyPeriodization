@@ -52,6 +52,11 @@ export const HeaderNavigation = () => {
           },
         ]),
     {
+      name: "Set Point Values",
+      src: "points-config",
+      id: "points-config",
+    },
+    {
       name: "Settings",
       src: "settings",
       id: "settings",

@@ -26,6 +26,7 @@ import {
   balancedPointsEnum,
   CostTime,
 } from "../../Models";
+import { PointsConfig, DEFAULT_POINTS_CONFIG } from "../../Models/PointsConfigModel";
 import { EpicTable } from "../../Components/Analysis/Table/EpicTable";
 import { Loading } from "../../Components/Common/Loading";
 import Select, { OptionType, StylesConfig } from "@atlaskit/select";
@@ -107,6 +108,9 @@ export const Analysis = () => {
     benefitResults: number[];
     timeResults: number[];
   } | null>(null);
+
+  const [useConfigValues, setUseConfigValues] = useState<boolean>(false);
+  const [pointsConfig, setPointsConfig] = useState<PointsConfig | null>(null);
 
   const [scope] = useAppContext();
   const api = useAPI();
@@ -396,6 +400,20 @@ export const Analysis = () => {
   }, [goalCollection, refresh]);
   // --- SLUTT PÅ FIKS ---
 
+  useEffect(() => {
+    api.pointsConfig.get(scope.id)
+      .then((data) => {
+        setPointsConfig({
+          scopeId: scope.id,
+          ...DEFAULT_POINTS_CONFIG,
+          ...(data && typeof data === "object" ? data : {}),
+        });
+      })
+      .catch(() => {
+        setPointsConfig({ scopeId: scope.id, ...DEFAULT_POINTS_CONFIG });
+      });
+  }, [scope.id]);
+
   // --- NY CALLBACK FOR Å MOTTA RÅDATA ---
   const handleSimulationComplete = useCallback(
     (data: {
@@ -469,10 +487,23 @@ export const Analysis = () => {
         </SectionMessage>
       </Box>
 
+      {/* Toggle: Points vs Values */}
+      <Box>
+        <Flex direction="row" xcss={xcss({ alignItems: "center", gap: "space.100", marginBottom: "space.200" })}>
+          <Label htmlFor="use-config-values-toggle">Show as Points</Label>
+          <Toggle
+            id="use-config-values-toggle"
+            isChecked={useConfigValues}
+            onChange={() => setUseConfigValues((v) => !v)}
+          />
+          <Label htmlFor="use-config-values-toggle">Show as Values</Label>
+        </Flex>
+      </Box>
+
       {/* --- NYTT KPI DASHBOARD --- */}
       {!isLoading && (
         <Box>
-          <AnalysisDashboard items={items} />
+          <AnalysisDashboard items={items} useValues={useConfigValues} config={pointsConfig} />
         </Box>
       )}
 
@@ -484,9 +515,11 @@ export const Analysis = () => {
             goalTier={goalCollection.value}
             items={sortedItems}
             loading={isLoading}
-            showMonetary={isMonetary}
+            showMonetary={useConfigValues ? true : isMonetary}
             pointValue={
-              upperIsMonetary
+              useConfigValues && pointsConfig
+                ? (Number(pointsConfig.bpMonetaryValue) || 1)
+                : upperIsMonetary
                 ? upperGoals.reduce(
                     (acc, curr) => acc + curr!!.balancedPoints!!.value,
                     0
@@ -494,8 +527,18 @@ export const Analysis = () => {
                 : expectedBenefit / 100
             }
             upperIsMonetary={upperIsMonetary}
-            costValue={!upperIsMonetary ? expectedCosts / 100 : 0}
-            postfix={postfix}
+            costValue={
+              useConfigValues && pointsConfig
+                ? pointsConfig.spMonetaryValue
+                : !upperIsMonetary
+                ? expectedCosts / 100
+                : 0
+            }
+            postfix={
+              useConfigValues && pointsConfig ? pointsConfig.bpCurrency : postfix
+            }
+            spRate={useConfigValues && pointsConfig ? (Number(pointsConfig.spMonetaryValue) || 1) : 1}
+            tpRate={useConfigValues && pointsConfig ? (Number(pointsConfig.tpValue) || 1) : 1}
           />
 
           {/* --- NYTT: MONTE CARLO KOMPONENT --- */}
@@ -504,6 +547,8 @@ export const Analysis = () => {
             <MonteCarloDashboard
               items={items}
               onSimulationComplete={handleSimulationComplete}
+              useValues={useConfigValues}
+              config={pointsConfig}
             />
           )}
 
@@ -513,14 +558,20 @@ export const Analysis = () => {
               <MonteCarloChartSet
                 title="Total Benefit"
                 data={simulationRawData.benefitResults}
+                rate={useConfigValues && pointsConfig ? (Number(pointsConfig.bpMonetaryValue) || 1) : 1}
+                unit={useConfigValues && pointsConfig ? (pointsConfig.bpCurrency || "") : ""}
               />
               <MonteCarloChartSet
                 title="Total Cost"
                 data={simulationRawData.costResults}
+                rate={useConfigValues && pointsConfig ? (Number(pointsConfig.spMonetaryValue) || 1) : 1}
+                unit={useConfigValues && pointsConfig ? (pointsConfig.spCurrency || "") : ""}
               />
               <MonteCarloChartSet
                 title="Total Time"
                 data={simulationRawData.timeResults}
+                rate={useConfigValues && pointsConfig ? (Number(pointsConfig.tpValue) || 1) : 1}
+                unit={useConfigValues && pointsConfig ? (pointsConfig.tpUnit || "") : ""}
               />
               {/* Vi kan droppe 'benefitResults' siden den (sannsynligvis) er en fast verdi 
             og histogrammet vil bare være en enkelt stolpe.
@@ -547,11 +598,11 @@ export const Analysis = () => {
                 margin: "auto 0", // Sentrerer vertikalt
               })}
             >
-              <BenefitPieChart items={items} />
+              <BenefitPieChart items={items} useValues={useConfigValues} config={pointsConfig} />
             </Box>
             {/* Venstre Kolonne: Scatter Plot */}
             <Box xcss={xcss({ flexBasis: "65%" })}>
-              <RiskRewardPlot items={items} />
+              <RiskRewardPlot items={items} useValues={useConfigValues} config={pointsConfig} />
             </Box>
           </Flex>
         </>

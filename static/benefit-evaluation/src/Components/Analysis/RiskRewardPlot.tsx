@@ -12,6 +12,7 @@ import {
   ChartData,
 } from "chart.js";
 import { GoalTableItem } from "../../Models";
+import { PointsConfig } from "../../Models/PointsConfigModel";
 
 // Registrer komponentene Chart.js trenger
 ChartJS.register(
@@ -25,6 +26,8 @@ ChartJS.register(
 
 type PlotProps = {
   items: GoalTableItem[];
+  useValues?: boolean;
+  config?: PointsConfig | null;
 };
 
 const calculateExpectedValue = (O: number, M: number, P: number): number => {
@@ -58,21 +61,27 @@ const generateColor = (str: string) => {
   return `#${color}`;
 };
 
-export const RiskRewardPlot = ({ items }: PlotProps) => {
-  // Transformer dataen til et format Chart.js forstår
+const toRate = (v: unknown, fallback = 1): number => {
+  const n = Number(v);
+  return isNaN(n) ? fallback : n;
+};
+
+export const RiskRewardPlot = ({ items, useValues = false, config }: PlotProps) => {
+  const bpRate = useValues && config ? toRate(config.bpMonetaryValue) : 1;
+  const spRate = useValues && config ? toRate(config.spMonetaryValue) : 1;
+  const bpUnit = useValues && config ? (config.bpCurrency || "pts") : "pts";
+  const spUnit = useValues && config ? (config.spCurrency || "pts") : "pts";
+
   const data: ChartData<"scatter"> = useMemo(() => {
     const datasets = items.map((item) => {
-      // Y-akse: Hent Nytte (Benefit)
       const properties = (item as any).properties;
-      const benefit = properties?.evaluation_points?.value || 0;
+      const benefit = (properties?.evaluation_points?.value || 0) * bpRate;
 
-      // X-akse: Beregn E-Cost
       const M_Cost = item.issueCost?.cost || 1;
       const O_Cost = item.issueCost?.costOptimistic ?? M_Cost;
       const P_Cost = item.issueCost?.costPessimistic ?? M_Cost;
-      const expectedCost = calculateExpectedValue(O_Cost, M_Cost, P_Cost);
+      const expectedCost = calculateExpectedValue(O_Cost, M_Cost, P_Cost) * spRate;
 
-      // Boble-størrelse: Beregn E-Time
       const M_Time = item.issueCost?.time || 1;
       const O_Time = item.issueCost?.timeOptimistic ?? M_Time;
       const P_Time = item.issueCost?.timePessimistic ?? M_Time;
@@ -86,17 +95,17 @@ export const RiskRewardPlot = ({ items }: PlotProps) => {
           {
             x: expectedCost,
             y: benefit,
-            r: 5 + expectedTime / 2, // 5px radius + (E-Time / 2)
+            r: 5 + expectedTime / 2,
           },
         ],
-        backgroundColor: `${color}B3`, // 70% gjennomsiktighet
+        backgroundColor: `${color}B3`,
         borderColor: color,
         borderWidth: 1,
       };
     });
 
     return { datasets };
-  }, [items]);
+  }, [items, bpRate, spRate]);
 
   const options: ChartOptions<"scatter"> = {
     responsive: true,
@@ -113,12 +122,8 @@ export const RiskRewardPlot = ({ items }: PlotProps) => {
         callbacks: {
           label: function (context: any) {
             let label = context.dataset.label || "";
-            if (label) {
-              label += ": ";
-            }
-            label += `(PERT Cost: ${context.parsed.x.toFixed(
-              2
-            )}, Benefit: ${context.parsed.y?.toFixed(0)})`;
+            if (label) label += ": ";
+            label += `(PERT Cost: ${context.parsed.x.toFixed(2)} ${spUnit}, Benefit: ${context.parsed.y?.toFixed(2)} ${bpUnit})`;
             return label;
           },
         },
@@ -129,14 +134,14 @@ export const RiskRewardPlot = ({ items }: PlotProps) => {
         beginAtZero: true,
         title: {
           display: true,
-          text: "Benefit Points (Reward)",
+          text: `Benefit (${bpUnit})`,
         },
       },
       x: {
         beginAtZero: true,
         title: {
           display: true,
-          text: "PERT Cost (Risk/Effort)",
+          text: `PERT Cost (${spUnit})`,
         },
       },
     },

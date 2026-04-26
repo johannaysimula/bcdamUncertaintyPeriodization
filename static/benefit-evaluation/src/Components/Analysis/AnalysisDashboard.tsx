@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { GoalTableItem } from "../../Models";
+import { PointsConfig } from "../../Models/PointsConfigModel";
 import { Stack, Box, xcss } from "@atlaskit/primitives";
 import Lozenge from "@atlaskit/lozenge";
 import { Label } from "@atlaskit/form";
@@ -27,6 +28,8 @@ const calculateExpectedValue = (O: number, M: number, P: number): number => {
 };
 type KpiProps = {
   items: GoalTableItem[];
+  useValues?: boolean;
+  config?: PointsConfig | null;
 };
 
 // Stil for hver KPI-boks
@@ -45,7 +48,18 @@ const kpiValueStyle = xcss({
   paddingTop: "space.050",
 });
 
-export const AnalysisDashboard = ({ items }: KpiProps) => {
+const toRate = (v: unknown, fallback = 1): number => {
+  const n = Number(v);
+  return isNaN(n) ? fallback : n;
+};
+
+export const AnalysisDashboard = ({ items, useValues = false, config }: KpiProps) => {
+  const bpRate = useValues && config ? toRate(config.bpMonetaryValue) : 1;
+  const spRate = useValues && config ? toRate(config.spMonetaryValue) : 1;
+  const tpRate = useValues && config ? toRate(config.tpValue) : 1;
+  const bpUnit = useValues && config ? (config.bpCurrency || "pts") : "pts";
+  const spUnit = useValues && config ? (config.spCurrency || "pts") : "pts";
+  const tpUnit = useValues && config ? (config.tpUnit || "pts") : "pts";
   // Bruker useMemo for å beregne totalene kun når 'items' endres
   const totals = useMemo(() => {
     let totalBenefit = 0;
@@ -103,64 +117,50 @@ export const AnalysisDashboard = ({ items }: KpiProps) => {
     <Stack space="space.200">
       <Flex xcss={xcss({ gap: "space.200" })}>
         <Box xcss={kpiBoxStyle}>
-          <Label htmlFor="">Total Benefit Points</Label>
+          <Label htmlFor="">Total Benefit ({bpUnit})</Label>
           <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
-            {" "}
-            {/* Blå */}
-            {totals.benefit.toFixed(2)}
+            {(totals.benefit * bpRate).toFixed(2)}
           </Box>
         </Box>
 
         <Box xcss={kpiBoxStyle}>
-          <Label htmlFor="">Total PERT Benefit (E)</Label>
+          <Label htmlFor="">Total PERT Benefit ({bpUnit})</Label>
           <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
-            {" "}
-            {/* Rød */}
-            {totals.benefitPERT.toFixed(2)}
-          </Box>
-        </Box>
-
-        
-        <Box xcss={kpiBoxStyle}> 
-          <Label htmlFor="">Total Cost Points</Label>
-          <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
-            {" "}
-            {/* Blå */}
-            {totals.costpoints.toFixed(2)}
+            {(totals.benefitPERT * bpRate).toFixed(2)}
           </Box>
         </Box>
 
         <Box xcss={kpiBoxStyle}>
-          <Label htmlFor="">Total PERT Cost (E)</Label>
+          <Label htmlFor="">Total Cost ({spUnit})</Label>
           <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
-            {" "}
-            {/* Rød */}
-            {totals.cost.toFixed(2)}
+            {(totals.costpoints * spRate).toFixed(2)}
           </Box>
         </Box>
 
         <Box xcss={kpiBoxStyle}>
-          <Label htmlFor="">Total Time Points</Label>
+          <Label htmlFor="">Total PERT Cost ({spUnit})</Label>
           <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
-            {" "}
-            {/* Blå */}
-            {totals.timepoints.toFixed(2)}
+            {(totals.cost * spRate).toFixed(2)}
           </Box>
         </Box>
 
         <Box xcss={kpiBoxStyle}>
-          <Label htmlFor="">Total PERT Time (E)</Label>
+          <Label htmlFor="">Total Time ({tpUnit})</Label>
           <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
-            {" "}
-            {/* Oransje */}
-            {totals.time.toFixed(2)}
+            {(totals.timepoints * tpRate).toFixed(2)}
+          </Box>
+        </Box>
+
+        <Box xcss={kpiBoxStyle}>
+          <Label htmlFor="">Total PERT Time ({tpUnit})</Label>
+          <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
+            {(totals.time * tpRate).toFixed(2)}
           </Box>
         </Box>
 
         <Box xcss={kpiBoxStyle}>
           <Label htmlFor="">Expected Project BC Score</Label>
           <Box xcss={kpiValueStyle} style={{ color: "#0065FF" }}>
-            {" "}
             {totals.bcScore.toFixed(2)}
           </Box>
         </Box>
