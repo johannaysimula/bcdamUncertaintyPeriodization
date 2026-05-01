@@ -24,6 +24,64 @@ import { EconomicConfig } from "./EconomicConfig";
 import { token } from "@atlaskit/tokens";
 import Tooltip from "@atlaskit/tooltip";
 import { useTranslation } from "@forge/react";
+import {
+  BP_DISTRIBUTIONS,
+  SP_DISTRIBUTIONS,
+} from "./PeriodizationProfiles";
+
+const ProfileSparkline: React.FC<{ distribution: number[]; color: string }> = ({
+  distribution,
+  color,
+}) => {
+  const W = 72;
+  const H = 20;
+  const count = distribution.length;
+  const gap = 1;
+  const barW = (W - gap * (count - 1)) / count;
+  const maxVal = Math.max(...distribution, 0.001);
+  return (
+    <svg width={W} height={H} style={{ display: "block", flexShrink: 0 }} aria-hidden="true">
+      {distribution.map((val, i) => {
+        const bh = (val / maxVal) * H;
+        return (
+          <rect
+            key={i}
+            x={i * (barW + gap)}
+            y={H - bh}
+            width={barW}
+            height={Math.max(bh, 1)}
+            fill={color}
+            rx={1}
+          />
+        );
+      })}
+    </svg>
+  );
+};
+
+const formatBpOptionLabel = (option: ProfileOption, meta: { context: string }) => {
+  if (meta.context === "value") return <span>{option.label}</span>;
+  const profileFn = BP_DISTRIBUTIONS[option.value];
+  const dist = profileFn ? profileFn(10) : Array(10).fill(0.1);
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <ProfileSparkline distribution={dist} color="#8777D9" />
+      <span style={{ fontSize: "12px" }}>{option.label}</span>
+    </div>
+  );
+};
+
+const formatSpOptionLabel = (option: ProfileOption, meta: { context: string }) => {
+  if (meta.context === "value") return <span>{option.label}</span>;
+  const profileFn = SP_DISTRIBUTIONS[option.value];
+  const dist = profileFn ? profileFn(10) : Array(10).fill(0.1);
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <ProfileSparkline distribution={dist} color="#36B37E" />
+      <span style={{ fontSize: "12px" }}>{option.label}</span>
+    </div>
+  );
+};
 
 // 2. Updated Interface to include the new props
 interface EpicSelectionTableProps {
@@ -149,6 +207,7 @@ export const EpicSelectionTable: React.FC<EpicSelectionTableProps> = ({
                   onChange={(option) =>
                     handleProfileChange(epicId, "bp", option as ProfileOption)
                   }
+                  formatOptionLabel={formatBpOptionLabel}
                   placeholder={t("analysis.table.placeholder_bp")}
                   spacing="compact"
                 />
@@ -164,6 +223,7 @@ export const EpicSelectionTable: React.FC<EpicSelectionTableProps> = ({
                 onChange={(option) =>
                   handleProfileChange(epicId, "sp", option as ProfileOption)
                 }
+                formatOptionLabel={formatSpOptionLabel}
                 placeholder={t("analysis.table.placeholder_sp")}
                 spacing="compact"
               />
