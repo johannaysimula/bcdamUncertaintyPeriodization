@@ -34,5 +34,5 @@ translations:
     default: no-NO
 app:
   runtime:
-    name: nodejs20.x
+    name: nodejs24.x
   id: ari:cloud:ecosystem::app/5a11491a-a245-46cf-8c57-e64b532a2d4d

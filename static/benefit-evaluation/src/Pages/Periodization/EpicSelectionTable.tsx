@@ -111,7 +111,7 @@ export const EpicSelectionTable: React.FC<EpicSelectionTableProps> = ({
             key: "bp",
             content: (
               <Lozenge appearance="new" isBold>
-                {String(rawBP)}
+                {rawBP.toFixed(2)}
               </Lozenge>
             ),
           },
