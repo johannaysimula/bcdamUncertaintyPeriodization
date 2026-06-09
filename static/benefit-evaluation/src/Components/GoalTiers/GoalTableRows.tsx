@@ -33,7 +33,7 @@ export const GoalTableRows = (
             cells: [
                 {
                     key: item.key,
-                    content: item.key,
+                    content: <span style={{ whiteSpace: 'nowrap' }}>{item.key}</span>,
                 },
                 {
                     key: item.description,
@@ -41,56 +41,60 @@ export const GoalTableRows = (
                 },
                 {
                     key: item.balancedPoints?.value || 0,
-                    content: item.balancedPoints ? (
-                        goalTier.type === GoalTierTypeEnum.ISSUE_TYPE ? (
-                            <Tooltip content={'Benefit points'}>
-                                <Lozenge appearance="new">{`${
-                                    item.balancedPoints.type !==
-                                    balancedPointsEnum.WEIGHT
-                                        ? item.balancedPoints.value * 100
-                                        : item.balancedPoints.value > 1000
-                                        ? Math.round(
-                                              Number(item.balancedPoints.value)
-                                          ).toLocaleString(undefined, {
-                                              maximumFractionDigits: 0,
-                                          })
-                                        : (
-                                              Math.round(
-                                                  item.balancedPoints.value *
-                                                      100
-                                              ) / 100
-                                          ).toLocaleString(undefined, {
-                                              minimumFractionDigits: 2,
-                                              maximumFractionDigits: 2,
-                                          })
-                                } ${
-                                    item.balancedPoints.type ===
-                                    balancedPointsEnum.MONETARY
-                                        ? item.balancedPoints.postFix
-                                        : ''
-                                }`}</Lozenge>
-                            </Tooltip>
-                        ) : goalTier.type ===
-                          GoalTierTypeEnum.PORTFOLIO_ITEM ? (
-                            <Tooltip content={'Weight'}>
-                                <Lozenge appearance="new">{`${item.balancedPoints.value} ${item.balancedPoints.postFix}`}</Lozenge>
-                            </Tooltip>
-                        ) : (
-                            <Tooltip
-                                content={
-                                    item.balancedPoints.type ===
-                                    balancedPointsEnum.MONETARY
-                                        ? 'Monetary value'
-                                        : 'Weight'
-                                }
-                            >
-                                <Lozenge appearance="new">{`${item.balancedPoints.value.toLocaleString(
-                                    'en-US'
-                                )} ${item.balancedPoints.postFix}`}</Lozenge>
-                            </Tooltip>
-                        )
-                    ) : (
-                        <Lozenge appearance="default">NO ESTIMATES</Lozenge>
+                    content: (
+                        <div style={{ textAlign: 'right' }}>
+                            {item.balancedPoints ? (
+                                goalTier.type === GoalTierTypeEnum.ISSUE_TYPE ? (
+                                    <Tooltip content={'Benefit points'}>
+                                        <Lozenge appearance="new">{`${
+                                            item.balancedPoints.type !==
+                                            balancedPointsEnum.WEIGHT
+                                                ? item.balancedPoints.value * 100
+                                                : item.balancedPoints.value > 1000
+                                                ? Math.round(
+                                                      Number(item.balancedPoints.value)
+                                                  ).toLocaleString(undefined, {
+                                                      maximumFractionDigits: 0,
+                                                  })
+                                                : (
+                                                      Math.round(
+                                                          item.balancedPoints.value *
+                                                              100
+                                                      ) / 100
+                                                  ).toLocaleString(undefined, {
+                                                      minimumFractionDigits: 2,
+                                                      maximumFractionDigits: 2,
+                                                  })
+                                        } ${
+                                            item.balancedPoints.type ===
+                                            balancedPointsEnum.MONETARY
+                                                ? item.balancedPoints.postFix
+                                                : ''
+                                        }`}</Lozenge>
+                                    </Tooltip>
+                                ) : goalTier.type ===
+                                  GoalTierTypeEnum.PORTFOLIO_ITEM ? (
+                                    <Tooltip content={'Weight'}>
+                                        <Lozenge appearance="new">{`${item.balancedPoints.value} ${item.balancedPoints.postFix}`}</Lozenge>
+                                    </Tooltip>
+                                ) : (
+                                    <Tooltip
+                                        content={
+                                            item.balancedPoints.type ===
+                                            balancedPointsEnum.MONETARY
+                                                ? 'Monetary value'
+                                                : 'Weight'
+                                        }
+                                    >
+                                        <Lozenge appearance="new">{`${item.balancedPoints.value.toLocaleString(
+                                            'en-US'
+                                        )} ${item.balancedPoints.postFix}`}</Lozenge>
+                                    </Tooltip>
+                                )
+                            ) : (
+                                <Lozenge appearance="default">NO ESTIMATES</Lozenge>
+                            )}
+                        </div>
                     ),
                 },
                 ...(goalTier.type === GoalTierTypeEnum.ISSUE_TYPE
@@ -98,21 +102,25 @@ export const GoalTableRows = (
                           {
                               key: `${item.issueCost?.cost || 0}-cost`,
                               content: (
-                                  <Tooltip content={'Cost'}>
-                                      <Lozenge appearance="removed">{`${
-                                          item.issueCost?.cost || 0
-                                      }`}</Lozenge>
-                                  </Tooltip>
+                                  <div style={{ textAlign: 'right' }}>
+                                      <Tooltip content={'Cost'}>
+                                          <Lozenge appearance="removed">{`${
+                                              item.issueCost?.cost || 0
+                                          }`}</Lozenge>
+                                      </Tooltip>
+                                  </div>
                               ),
                           },
                           {
                               key: `${item.issueCost?.time || 0}-time`,
                               content: (
-                                  <Tooltip content={'Time'}>
-                                      <Lozenge appearance="inprogress">{`${
-                                          item.issueCost?.time || 0
-                                      }`}</Lozenge>
-                                  </Tooltip>
+                                  <div style={{ textAlign: 'right' }}>
+                                      <Tooltip content={'Time'}>
+                                          <Lozenge appearance="inprogress">{`${
+                                              item.issueCost?.time || 0
+                                          }`}</Lozenge>
+                                      </Tooltip>
+                                  </div>
                               ),
                           },
                           {

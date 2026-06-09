@@ -17,24 +17,27 @@ export const GoalTableHead = (goalTier: GoalTier): HeadType | undefined => {
             },
             {
                 key: 'balancedPoints',
-                content:
-                    goalTier.type === GoalTierTypeEnum.ISSUE_TYPE
-                        ? 'Benefit Points'
-                        : goalTier.type === GoalTierTypeEnum.PORTFOLIO_ITEM
-                        ? 'Portfolio Item Points'
-                        : 'Weight',
+                content: (
+                    <span style={{ display: 'block', textAlign: 'right' }}>
+                        {goalTier.type === GoalTierTypeEnum.ISSUE_TYPE
+                            ? 'Benefit Points'
+                            : goalTier.type === GoalTierTypeEnum.PORTFOLIO_ITEM
+                            ? 'Portfolio Item Points'
+                            : 'Weight'}
+                    </span>
+                ),
                 isSortable: true,
             },
             ...(goalTier.type === GoalTierTypeEnum.ISSUE_TYPE
                 ? [
                       {
                           key: 'cost',
-                          content: 'Cost',
+                          content: <span style={{ display: 'block', textAlign: 'right' }}>Cost Points</span>,
                           isSortable: true,
                       },
                       {
                           key: 'time',
-                          content: 'Time',
+                          content: <span style={{ display: 'block', textAlign: 'right' }}>Time Points</span>,
                           isSortable: true,
                       },
                       {
