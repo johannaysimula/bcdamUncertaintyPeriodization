@@ -18,7 +18,7 @@ import { EpicSelectionTable } from "./EpicSelectionTable";
 import { TotalResultsTable } from "./TotalResultsTable";
 import { PeriodizationChartContainer } from "./PeriodizationChartContainer";
 import { ScenarioChart } from "./ScenarioChart";
-import { ScenarioFinancialChart } from "./ScenarioFinancialChart";
+import { ScenarioFinancialChart, ScenarioNpvChart } from "./ScenarioFinancialChart";
 import { useTranslation } from "../../i18n";
 
 export const Periodization = () => {
@@ -254,6 +254,16 @@ export const Periodization = () => {
         expectedResults.length > 0 &&
         pessimisticResults.length > 0 && (
           <ScenarioFinancialChart
+            optimisticResults={optimisticResults}
+            expectedResults={expectedResults}
+            pessimisticResults={pessimisticResults}
+          />
+        )}
+
+      {optimisticResults.length > 0 &&
+        expectedResults.length > 0 &&
+        pessimisticResults.length > 0 && (
+          <ScenarioNpvChart
             optimisticResults={optimisticResults}
             expectedResults={expectedResults}
             pessimisticResults={pessimisticResults}

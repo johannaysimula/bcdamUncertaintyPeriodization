@@ -258,3 +258,99 @@ export const ScenarioFinancialChart: React.FC<ScenarioFinancialChartProps> = ({
     </div>
   );
 };
+
+export const ScenarioNpvChart: React.FC<ScenarioFinancialChartProps> = ({
+  optimisticResults,
+  expectedResults,
+  pessimisticResults,
+}) => {
+  const { t } = useTranslation();
+
+  const chartData = useMemo(() => {
+    const base = expectedResults.length > 0 ? expectedResults : optimisticResults;
+    if (base.length === 0) return { labels: [], datasets: [] };
+
+    const labels = base.map((r) => `${t("chart.year_label")} ${r.period}`);
+
+    return {
+      labels,
+      datasets: [
+        {
+          type: "line" as const,
+          label: `${t("chart.acc_npv")} (${t("periodization.optimistic_label")})`,
+          borderColor: "rgba(53, 162, 235, 0.5)",
+          backgroundColor: "transparent",
+          data: optimisticResults.map((r) => r.accumulatedNPV),
+          borderDash: [8, 4],
+          tension: 0.4,
+          pointRadius: 3,
+          borderWidth: 2,
+        },
+        {
+          type: "line" as const,
+          label: `${t("chart.acc_npv")} (${t("periodization.expected_label")})`,
+          borderColor: "rgb(53, 162, 235)",
+          backgroundColor: "rgba(53, 162, 235, 0.1)",
+          data: expectedResults.map((r) => r.accumulatedNPV),
+          borderDash: [],
+          tension: 0.4,
+          pointRadius: 5,
+          borderWidth: 3,
+        },
+        {
+          type: "line" as const,
+          label: `${t("chart.acc_npv")} (${t("periodization.pessimistic_label")})`,
+          borderColor: "rgba(53, 162, 235, 0.5)",
+          backgroundColor: "transparent",
+          data: pessimisticResults.map((r) => r.accumulatedNPV),
+          borderDash: [2, 4],
+          tension: 0.4,
+          pointRadius: 3,
+          borderWidth: 2,
+        },
+      ],
+    };
+  }, [optimisticResults, expectedResults, pessimisticResults, t]);
+
+  const options = useMemo(() => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: "top" as const },
+      title: {
+        display: true,
+        text: t("chart.acc_npv"),
+      },
+    },
+    scales: {
+      y: {
+        type: "linear" as const,
+        display: true,
+        title: {
+          display: true,
+          text: "Akkumulert NPV",
+        },
+      },
+      x: {
+        title: { display: true, text: "Periode (År)" },
+      },
+    },
+  }), [t]);
+
+  if (
+    optimisticResults.length === 0 &&
+    expectedResults.length === 0 &&
+    pessimisticResults.length === 0
+  ) {
+    return null;
+  }
+
+  return (
+    <div style={{ marginTop: "40px" }}>
+      <h3>{t("chart.acc_npv")} — {t("periodization.all_scenarios_label")}</h3>
+      <div style={{ height: "350px" }}>
+        <Chart type={"line"} data={chartData} options={options as any} />
+      </div>
+    </div>
+  );
+};
