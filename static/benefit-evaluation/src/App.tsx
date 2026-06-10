@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { view } from "@forge/bridge";
-import { I18nProvider } from "@forge/react";
 import { Router } from "react-router";
 import { Loading } from "./Components/Common/Loading";
 import { Action as RouterAction } from "@remix-run/router/dist/history";
@@ -45,7 +44,7 @@ export const App = () => {
   }, [history]);
 
   return (
-    <I18nProvider>
+    <>
       {history && historyState ? (
         <Router
           navigator={history}
@@ -57,6 +56,6 @@ export const App = () => {
       ) : (
         <Loading />
       )}
-    </I18nProvider>
+    </>
   );
 };

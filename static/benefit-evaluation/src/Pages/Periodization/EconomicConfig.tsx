@@ -2,7 +2,7 @@ import React, { FormEvent } from "react";
 import TextField from "@atlaskit/textfield";
 import Lozenge from "@atlaskit/lozenge";
 import { Grid, xcss, Box, Stack, Text } from "@atlaskit/primitives";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 
 // --- STYLING ---
 

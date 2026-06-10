@@ -7,7 +7,7 @@ import HipchatChevronDoubleDownIcon from "@atlaskit/icon/glyph/hipchat/chevron-d
 
 import { PeriodizationPeriodResult } from "./periodizationCalculations";
 import { SpotlightTarget } from "@atlaskit/onboarding";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 
 interface TotalResultsTableProps {
   periodizationResults: PeriodizationPeriodResult[];

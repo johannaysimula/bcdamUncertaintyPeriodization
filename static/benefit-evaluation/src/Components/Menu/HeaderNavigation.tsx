@@ -8,7 +8,12 @@ import {
   Settings,
 } from "@atlaskit/atlassian-navigation";
 import { Box, Flex, xcss } from "@atlaskit/primitives";
-import { useAPI } from "../../Contexts/ApiContext";
+import { useTranslation, useLocale } from "../../i18n";
+import WorldIcon from "@atlaskit/icon/glyph/world";
+import Button from "@atlaskit/button";
+import Tooltip from "@atlaskit/tooltip";
+import Popup from "@atlaskit/popup";
+import { MenuGroup, Section, ButtonItem } from "@atlaskit/menu";
 
 type TabLink = {
   name: string;
@@ -20,16 +25,15 @@ export const HeaderNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedTab, setSelectedTab] = useState<string>();
+  const [isLangPopupOpen, setIsLangPopupOpen] = useState(false);
   const [scope] = useAppContext();
-  const api = useAPI();
+  const { t } = useTranslation();
+  const currentLocale = useLocale();
 
-  useEffect(() => {
-    const scopeLocation = location.pathname.replaceAll("/", "");
-    const index = tabLinks.find((tabLink) => {
-      return scopeLocation.includes(tabLink.src);
-    });
-    setSelectedTab(index?.name);
-  }, [location]);
+  const handleLanguageChange = (newLocale: string) => {
+    setIsLangPopupOpen(false);
+    window.dispatchEvent(new CustomEvent("languageChange", { detail: newLocale }));
+  };
 
   const tabLinks: TabLink[] = [
     {
@@ -68,6 +72,12 @@ export const HeaderNavigation = () => {
     },
   ];
 
+  useEffect(() => {
+    const scopeLocation = location.pathname.replaceAll("/", "");
+    const index = tabLinks.find((tabLink) => scopeLocation.includes(tabLink.src));
+    setSelectedTab(index?.name);
+  }, [location]);
+
   const ScopeHeader = () => {
     const headerStyle = xcss({
       color: "color.text.accent.blue",
@@ -78,7 +88,6 @@ export const HeaderNavigation = () => {
       width: "100%",
       textAlign: "left",
     });
-
     return (
       <Box as="h5" xcss={headerStyle}>
         {scope.name.toUpperCase()}
@@ -86,11 +95,52 @@ export const HeaderNavigation = () => {
     );
   };
 
-  const DefaultSettings = () => (
-    <Settings
-      tooltip="Settings"
-      isSelected={selectedTab === "Settings"}
-      onClick={() => navigate("settings")}
+  const LanguageDropdown = () => (
+    <Popup
+      isOpen={isLangPopupOpen}
+      onClose={() => setIsLangPopupOpen(false)}
+      placement="bottom-end"
+      content={() => (
+        <Box xcss={xcss({ minWidth: "150px", padding: "space.100" })}>
+          <MenuGroup>
+            <Section title={t("nav.language_tooltip")}>
+              <ButtonItem
+                isSelected={currentLocale === "no-NO"}
+                onClick={() => handleLanguageChange("no-NO")}
+              >
+                Norsk (bokmål)
+              </ButtonItem>
+              <ButtonItem
+                isSelected={currentLocale === "en-US"}
+                onClick={() => handleLanguageChange("en-US")}
+              >
+                English
+              </ButtonItem>
+            </Section>
+          </MenuGroup>
+        </Box>
+      )}
+      trigger={(triggerProps) => (
+        <Box
+          xcss={xcss({
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "32px",
+            height: "32px",
+          })}
+        >
+          <Tooltip content={t("nav.language_tooltip")}>
+            <Button
+              {...triggerProps}
+              appearance="subtle"
+              spacing="none"
+              onClick={() => setIsLangPopupOpen(!isLangPopupOpen)}
+              iconBefore={<WorldIcon label={t("nav.language_tooltip")} />}
+            />
+          </Tooltip>
+        </Box>
+      )}
     />
   );
 
@@ -98,10 +148,24 @@ export const HeaderNavigation = () => {
     <AtlassianNavigation
       label="site"
       renderProductHome={() => null}
-      renderHelp={() => <Help tooltip="" onClick={() => {}} />}
-      renderSettings={DefaultSettings}
+      renderHelp={() => (
+        <Flex alignItems="center" gap="space.050">
+          <LanguageDropdown />
+          <Help tooltip="" onClick={() => {}} />
+        </Flex>
+      )}
+      renderSettings={() => (
+        <Settings
+          tooltip={t("nav.settings_tooltip")}
+          isSelected={
+            selectedTab === "Settings" || location.pathname.includes("settings")
+          }
+          onClick={() => navigate("settings")}
+        />
+      )}
       primaryItems={[
         <Flex
+          key="scope"
           alignItems="center"
           justifyContent="center"
           xcss={xcss({
@@ -115,20 +179,18 @@ export const HeaderNavigation = () => {
         >
           <ScopeHeader />
         </Flex>,
-        ...tabLinks.map((tabLink: TabLink, index) => {
-          if (tabLink.name !== "Settings") {
-            return (
-              <div key={index} id={tabLink.id}>
-                <PrimaryButton
-                  isSelected={selectedTab === tabLink.name}
-                  onClick={() => navigate(tabLink.src)}
-                >
-                  {tabLink.name}
-                </PrimaryButton>
-              </div>
-            );
-          }
-        }),
+        ...tabLinks
+          .filter((tabLink) => tabLink.name !== "Settings")
+          .map((tabLink: TabLink, index) => (
+            <div key={index} id={tabLink.id}>
+              <PrimaryButton
+                isSelected={selectedTab === tabLink.name}
+                onClick={() => navigate(tabLink.src)}
+              >
+                {tabLink.name}
+              </PrimaryButton>
+            </div>
+          )),
       ]}
     />
   );

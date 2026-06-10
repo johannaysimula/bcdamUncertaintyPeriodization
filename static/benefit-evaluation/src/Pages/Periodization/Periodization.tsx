@@ -19,7 +19,7 @@ import { TotalResultsTable } from "./TotalResultsTable";
 import { PeriodizationChartContainer } from "./PeriodizationChartContainer";
 import { ScenarioChart } from "./ScenarioChart";
 import { ScenarioFinancialChart } from "./ScenarioFinancialChart";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 
 export const Periodization = () => {
   const { t } = useTranslation();

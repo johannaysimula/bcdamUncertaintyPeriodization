@@ -11,7 +11,7 @@ import { useGoalForm } from "../hooks/useGoalDrawer";
 import { ROOT_COLLECTION_DATA } from "../constants/goalConstants";
 import TextArea from "@atlaskit/textarea";
 import { Field } from "@atlaskit/form";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 
 // --- Props ---
 type Props = {

@@ -18,7 +18,7 @@ import { SpotlightTarget } from "@atlaskit/onboarding";
 import Tooltip from "@atlaskit/tooltip";
 
 // Import the hook
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../../i18n";
 
 interface ProductRootItem {
   id: string;

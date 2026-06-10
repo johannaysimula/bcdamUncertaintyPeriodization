@@ -20,7 +20,7 @@ import { AdminPortfolio } from "../../Pages/Portfolio/AdminPortfolio";
 import { Box, xcss } from "@atlaskit/primitives";
 import { LeftSidebar } from "@atlaskit/page-layout";
 import { SpotlightTarget } from "@atlaskit/onboarding";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 
 export const Nav = () => {
   const { t } = useTranslation();

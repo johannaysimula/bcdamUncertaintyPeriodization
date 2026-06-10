@@ -16,7 +16,7 @@ import { NYTTE_COLLECTION_ID } from "../../constants/goalConstants";
 import Tooltip from "@atlaskit/tooltip";
 
 // Import the translation hook
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../../i18n";
 
 interface BenefitRootItem {
   id: string;

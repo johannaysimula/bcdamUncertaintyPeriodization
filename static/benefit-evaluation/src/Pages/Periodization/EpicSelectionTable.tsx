@@ -23,7 +23,7 @@ import Modal, {
 import { EconomicConfig } from "./EconomicConfig";
 import { token } from "@atlaskit/tokens";
 import Tooltip from "@atlaskit/tooltip";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 import {
   BP_DISTRIBUTIONS,
   SP_DISTRIBUTIONS,

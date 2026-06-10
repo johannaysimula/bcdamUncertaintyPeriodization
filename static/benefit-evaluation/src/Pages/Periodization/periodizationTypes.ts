@@ -1,5 +1,5 @@
 // periodizationTypes.ts
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 import { useMemo } from "react";
 
 export interface ProfileOption {

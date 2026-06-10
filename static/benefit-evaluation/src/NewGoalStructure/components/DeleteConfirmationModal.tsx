@@ -9,7 +9,7 @@ import Button, { LoadingButton } from "@atlaskit/button";
 import React, { useState, useCallback } from "react";
 
 // Import the translation hook
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 
 interface DeleteConfirmationModalProps {
   itemName: string;

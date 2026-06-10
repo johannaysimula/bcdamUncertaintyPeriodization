@@ -11,7 +11,7 @@ import PageHeader from "@atlaskit/page-header";
 import Button from "@atlaskit/button";
 
 import React, { useState } from "react";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 import VisuallyHidden from "@atlaskit/visually-hidden";
 import Toggle from "@atlaskit/toggle";
 import { Box, Flex, xcss } from "@atlaskit/primitives";

@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { PeriodizationChart } from "./Charts";
 import { PeriodizationPeriodResult } from "./periodizationCalculations";
 import { SpotlightTarget } from "@atlaskit/onboarding";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 
 interface PeriodizationChartContainerProps {
   periodizationResults: PeriodizationPeriodResult[];

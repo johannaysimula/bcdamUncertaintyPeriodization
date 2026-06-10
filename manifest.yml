@@ -27,9 +27,9 @@ permissions:
 translations:
   resources:
     - key: en-US
-      path: static/benefit-evaluation/locales/en-US.json
+      path: static/benefit-evaluation/src/locales/en-US.json
     - key: no-NO
-      path: static/benefit-evaluation/locales/no-NO.json
+      path: static/benefit-evaluation/src/locales/no-NO.json
   fallback:
     default: no-NO
 app:

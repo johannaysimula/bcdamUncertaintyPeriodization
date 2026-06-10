@@ -18,7 +18,7 @@ import { SpotlightTarget } from "@atlaskit/onboarding";
 import BitbucketCompareIcon from "@atlaskit/icon/glyph/bitbucket/compare";
 import Lozenge from "@atlaskit/lozenge";
 import Tooltip from "@atlaskit/tooltip";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../../i18n";
 
 interface ObjectiveRootItem {
   id: string;

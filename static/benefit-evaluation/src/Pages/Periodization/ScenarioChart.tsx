@@ -13,7 +13,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { PeriodizationPeriodResult } from "./periodizationCalculations";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 
 ChartJS.register(
   LinearScale,

@@ -3,7 +3,7 @@ import PageHeader from "@atlaskit/page-header";
 import Button from "@atlaskit/button";
 import Textfield from "@atlaskit/textfield";
 import SectionMessage from "@atlaskit/section-message";
-import { useTranslation } from "@forge/react";
+import { useTranslation } from "../../i18n";
 import { useAppContext } from "../../Contexts/AppContext";
 import { useAPI } from "../../Contexts/ApiContext";
 import { PointsConfig, DEFAULT_POINTS_CONFIG } from "../../Models/PointsConfigModel";
