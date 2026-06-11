@@ -216,29 +216,13 @@ export const ScenarioFinancialChart: React.FC<ScenarioFinancialChartProps> = ({
           display: true,
           text: "Akkumulert NPV",
         },
-        min: chartData.datasets.length > 0
-          ? Math.min(
-              0,
-              ...optimisticResults.map((r) => r.accumulatedNPV),
-              ...expectedResults.map((r) => r.accumulatedNPV),
-              ...pessimisticResults.map((r) => r.accumulatedNPV)
-            )
-          : undefined,
-        max: chartData.datasets.length > 0
-          ? Math.max(
-              0,
-              ...optimisticResults.map((r) => r.accumulatedNPV),
-              ...expectedResults.map((r) => r.accumulatedNPV),
-              ...pessimisticResults.map((r) => r.accumulatedNPV)
-            )
-          : undefined,
         grid: { drawOnChartArea: false },
       },
       x: {
         title: { display: true, text: "Periode (År)" },
       },
     },
-  }), [chartData, optimisticResults, expectedResults, pessimisticResults, t]);
+  }), [t]);
 
   if (
     optimisticResults.length === 0 &&

@@ -269,6 +269,8 @@ export const Periodization = () => {
             pessimisticResults={pessimisticResults}
           />
         )}
+
+      <div style={{ height: "80px" }} />
     </>
   );
 };

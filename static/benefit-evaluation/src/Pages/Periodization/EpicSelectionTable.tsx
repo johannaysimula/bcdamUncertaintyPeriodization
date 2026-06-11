@@ -123,14 +123,16 @@ export const EpicSelectionTable: React.FC<EpicSelectionTableProps> = ({
   const closeModal = () => setIsModalOpen(false);
 
   // 4. Localized Table Head definition
+  const numericCellStyle = { textAlign: "right" as const };
+
   const head = useMemo(
     () => ({
       cells: [
         { key: "epic", content: t("analysis.table.epic"), width: 10 },
-        { key: "bp", content: t("analysis.table.bp"), width: 10 },
-        { key: "bpNok", content: t("analysis.table.bp_nok"), width: 15 },
-        { key: "sp", content: t("analysis.table.sp"), width: 10 },
-        { key: "spNok", content: t("analysis.table.sp_nok"), width: 15 },
+        { key: "bp", content: t("analysis.table.bp"), width: 10, style: numericCellStyle },
+        { key: "bpNok", content: t("analysis.table.bp_nok"), width: 15, style: numericCellStyle },
+        { key: "sp", content: t("analysis.table.sp"), width: 10, style: numericCellStyle },
+        { key: "spNok", content: t("analysis.table.sp_nok"), width: 15, style: numericCellStyle },
         { key: "bpProfile", content: t("analysis.table.select_bp"), width: 20 },
         { key: "spProfile", content: t("analysis.table.select_sp"), width: 20 },
       ],
@@ -167,6 +169,7 @@ export const EpicSelectionTable: React.FC<EpicSelectionTableProps> = ({
           { key: "epic", content: epic.key },
           {
             key: "bp",
+            style: numericCellStyle,
             content: (
               <Lozenge appearance="new" isBold>
                 {rawBP.toFixed(2)}
@@ -175,6 +178,7 @@ export const EpicSelectionTable: React.FC<EpicSelectionTableProps> = ({
           },
           {
             key: "bpNok",
+            style: numericCellStyle,
             content: (
               <Lozenge appearance="inprogress" isBold>
                 {formatNokValue(bpNokValue)}
@@ -183,6 +187,7 @@ export const EpicSelectionTable: React.FC<EpicSelectionTableProps> = ({
           },
           {
             key: "sp",
+            style: numericCellStyle,
             content: (
               <Lozenge appearance="success" isBold>
                 {String(rawSP)}
@@ -191,6 +196,7 @@ export const EpicSelectionTable: React.FC<EpicSelectionTableProps> = ({
           },
           {
             key: "spNok",
+            style: numericCellStyle,
             content: (
               <Lozenge appearance="removed" isBold>
                 {formatNokValue(spNokValue)}

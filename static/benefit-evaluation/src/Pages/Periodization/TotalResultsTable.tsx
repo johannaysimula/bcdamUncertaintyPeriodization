@@ -37,16 +37,18 @@ export const TotalResultsTable: React.FC<TotalResultsTableProps> = ({
   };
 
   // Flytter head-definisjon inn i useMemo for å støtte i18n
+  const numericCellStyle = { textAlign: "right" as const };
+
   const totalTableHead = useMemo(
     () => ({
       cells: [
-        { key: "period", content: t("chart.year_label") },
-        { key: "grossBenefit", content: t("chart.total_bp") },
-        { key: "grossCost", content: t("chart.total_sp") },
-        { key: "netPoints", content: t("chart.net_value") },
-        { key: "discount", content: t("analysis.table.discount") },
-        { key: "netNPV", content: t("analysis.table.npv") },
-        { key: "accumulatedNPV", content: t("chart.acc_npv") },
+        { key: "period", content: t("chart.year_label"), style: numericCellStyle },
+        { key: "grossBenefit", content: t("chart.total_bp"), style: numericCellStyle },
+        { key: "grossCost", content: t("chart.total_sp"), style: numericCellStyle },
+        { key: "netPoints", content: t("chart.net_value"), style: numericCellStyle },
+        { key: "discount", content: t("analysis.table.discount"), style: numericCellStyle },
+        { key: "netNPV", content: t("analysis.table.npv"), style: numericCellStyle },
+        { key: "accumulatedNPV", content: t("chart.acc_npv"), style: numericCellStyle },
       ],
     }),
     [t]
@@ -56,13 +58,13 @@ export const TotalResultsTable: React.FC<TotalResultsTableProps> = ({
     return periodizationResults.map((result) => ({
       key: `p-${result.period}`,
       cells: [
-        { key: "period", content: `${result.period}` },
-        { key: "grossBenefit", content: formatNum(result.grossBenefit) },
-        { key: "grossCost", content: formatNum(result.grossCost) },
-        { key: "netPoints", content: formatNum(result.netPoints) },
-        { key: "discount", content: formatNum(result.discountFactor, 4) }, // 4 desimaler for faktorer
-        { key: "netNPV", content: formatNum(result.netPresentValue) },
-        { key: "accumulatedNPV", content: formatNum(result.accumulatedNPV) },
+        { key: "period", content: `${result.period}`, style: numericCellStyle },
+        { key: "grossBenefit", content: formatNum(result.grossBenefit), style: numericCellStyle },
+        { key: "grossCost", content: formatNum(result.grossCost), style: numericCellStyle },
+        { key: "netPoints", content: formatNum(result.netPoints), style: numericCellStyle },
+        { key: "discount", content: formatNum(result.discountFactor, 4), style: numericCellStyle },
+        { key: "netNPV", content: formatNum(result.netPresentValue), style: numericCellStyle },
+        { key: "accumulatedNPV", content: formatNum(result.accumulatedNPV), style: numericCellStyle },
       ],
     }));
   }, [periodizationResults]);
